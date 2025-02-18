@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monolithic Curb Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Monolithic Curb Calculator</h1>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <form id="calculatorForm" class="space-y-4">
+                <div>
+                    <label for="curbHeight" class="block text-sm font-medium text-gray-700">Curb Height (inches)</label>
+                    <input type="number" id="curbHeight" name="curbHeight" step="any" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter curb height">
+                </div>
+
+                <div>
+                    <label for="slabHeight" class="block text-sm font-medium text-gray-700">Slab Height (inches)</label>
+                    <input type="number" id="slabHeight" name="slabHeight" step="any" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter slab height">
+                </div>
+
+                <div>
+                    <label for="curbLength" class="block text-sm font-medium text-gray-700">Curb Length (feet)</label>
+                    <input type="number" id="curbLength" name="curbLength" step="any" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter curb length">
+                </div>
+
+                <div>
+                    <label for="spillage" class="block text-sm font-medium text-gray-700">Spillage Factor</label>
+                    <input type="number" id="spillage" name="spillage" value="1.1" step="0.1" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter spillage factor">
+                </div>
+
+                <div class="mt-6 p-4 bg-gray-50 rounded-md">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Result:</h2>
+                    <p id="result" class="text-2xl font-bold text-blue-600">0.00 cubic yards</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const CURB_WIDTH = 14; // Constant curb width in inches
+
+        function calculateMonoCurb(curbHeight, slabHeight, curbLength, spillage) {
+            // Calculate curb height difference
+            const curbDiff = curbHeight - slabHeight;
+            
+            // Convert measurements to feet
+            const cheight = curbDiff / 12;
+            const cwidth = CURB_WIDTH / 12;
+            
+            // Calculate cubic feet volume
+            const cf = curbLength * cheight * cwidth;
+            
+            // Convert cubic feet to cubic yards
+            const cy = cf / 27;
+            
+            // Apply spillage factor
+            return cy * spillage;
+        }
+
+        function updateResult() {
+            const curbHeight = parseFloat(document.getElementById('curbHeight').value) || 0;
+            const slabHeight = parseFloat(document.getElementById('slabHeight').value) || 0;
+            const curbLength = parseFloat(document.getElementById('curbLength').value) || 0;
+            const spillage = parseFloat(document.getElementById('spillage').value) || 1.1;
+
+            const cubicYards = calculateMonoCurb(curbHeight, slabHeight, curbLength, spillage);
+            document.getElementById('result').textContent = `${cubicYards.toFixed(2)} cubic yards`;
+        }
+
+        // Add event listeners to all inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', updateResult);
+        });
+    </script>
+</body>
+</html> 
