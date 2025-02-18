@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggregate Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Aggregate Calculator</h1>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <form id="calculatorForm" class="space-y-4">
+                <div>
+                    <label for="length" class="block text-sm font-medium text-gray-700">Length (feet)</label>
+                    <input type="number" id="length" name="length" step="any" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter length">
+                </div>
+
+                <div>
+                    <label for="width" class="block text-sm font-medium text-gray-700">Width (feet)</label>
+                    <input type="number" id="width" name="width" step="any" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter width">
+                </div>
+
+                <div>
+                    <label for="depth" class="block text-sm font-medium text-gray-700">Depth (inches)</label>
+                    <input type="number" id="depth" name="depth" step="any" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter depth">
+                </div>
+
+                <div>
+                    <label for="material" class="block text-sm font-medium text-gray-700">Material Type</label>
+                    <select id="material" name="material" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Select material...</option>
+                        <option value="crushed_stone">Crushed Stone</option>
+                        <option value="processed_stone">Processed Stone</option>
+                        <option value="screenings">Screenings</option>
+                        <option value="surge_stone">Surge Stone</option>
+                        <option value="riprap">Riprap</option>
+                        <option value="bank_run_gravel">Bank Run Gravel</option>
+                        <option value="screened_sand">Screened Sand</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="compaction" class="block text-sm font-medium text-gray-700">Compaction State</label>
+                    <select id="compaction" name="compaction" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Select compaction state...</option>
+                        <option value="loose">Loose</option>
+                        <option value="compacted_95">Compacted (95%)</option>
+                    </select>
+                </div>
+
+                <div class="mt-6 p-4 bg-gray-50 rounded-md">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Result:</h2>
+                    <p id="result" class="text-2xl font-bold text-blue-600">0.00 tons</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Material densities in tons per cubic yard
+        const materialDensities = {
+            "crushed_stone": {"loose": 1.30, "compacted_95": 1.42},
+            "processed_stone": {"loose": 1.50, "compacted_95": 1.95},
+            "screenings": {"loose": 1.40, "compacted_95": 1.60},
+            "surge_stone": {"loose": 1.35, "compacted_95": 1.65},
+            "riprap": {"loose": 1.35, "compacted_95": null},
+            "bank_run_gravel": {"loose": 1.38, "compacted_95": 1.65},
+            "screened_sand": {"loose": 1.58, "compacted_95": 1.75}
+        };
+
+        function calculateTons(length, width, depth, material, compactionState) {
+            // Convert cubic feet to cubic yards (1 cubic yard = 27 cubic feet)
+            const volumeCubicYards = (length * width * (depth / 12)) / 27;
+            
+            // Get material density
+            const materialDensity = materialDensities[material]?.[compactionState];
+            
+            if (materialDensity === undefined || materialDensity === null) {
+                throw new Error(`Compaction state '${compactionState}' is not available for ${material}.`);
+            }
+
+            // Convert volume to tons
+            return volumeCubicYards * materialDensity;
+        }
+
+        function updateResult() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const depth = parseFloat(document.getElementById('depth').value) || 0;
+            const material = document.getElementById('material').value;
+            const compaction = document.getElementById('compaction').value;
+
+            try {
+                if (length && width && depth && material && compaction) {
+                    const tons = calculateTons(length, width, depth, material, compaction);
+                    document.getElementById('result').textContent = `${tons.toFixed(2)} tons`;
+                    document.getElementById('result').classList.remove('text-red-600');
+                    document.getElementById('result').classList.add('text-blue-600');
+                }
+            } catch (error) {
+                document.getElementById('result').textContent = error.message;
+                document.getElementById('result').classList.remove('text-blue-600');
+                document.getElementById('result').classList.add('text-red-600');
+            }
+        }
+
+        // Add event listeners to all inputs
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', updateResult);
+            input.addEventListener('change', updateResult);
+        });
+    </script>
+</body>
+</html> 
