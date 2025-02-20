@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone System Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pyodide@0.24.1/pyodide.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">Stone System Calculator</h1>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">System Specifications</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Single Unit Specifications -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-700">Single Unit Dimensions</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Height (inches)</label>
+                        <input type="number" id="height" value="45" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Width (inches)</label>
+                        <input type="number" id="width" value="77" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Length (inches)</label>
+                        <input type="number" id="length" value="90" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">End Cap Length (inches)</label>
+                        <input type="number" id="endCapLength" value="25.7" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- System Layout -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-700">System Layout</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Columns (Long Length)</label>
+                        <input type="number" id="columns" value="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Rows (Short Width)</label>
+                        <input type="number" id="rows" value="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stone Specifications -->
+            <div class="space-y-4 mb-6">
+                <h3 class="text-lg font-medium text-gray-700">Stone Specifications</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Lane Ends Stone (inches)</label>
+                        <input type="number" id="laneEndsStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Between Lanes Stone (inches)</label>
+                        <input type="number" id="betweenLanesStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">End Caps Stone (inches)</label>
+                        <input type="number" id="endCapsStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Bottom Stone (inches)</label>
+                        <input type="number" id="bottomStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Top Stone (inches)</label>
+                        <input type="number" id="topStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <button id="calculate" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Calculate
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="bg-white rounded-lg shadow-md p-6 space-y-4 hidden">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Results</h2>
+            
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <h3 class="text-lg font-medium text-gray-700">System Width</h3>
+                    <div id="widthResults" class="text-gray-600 space-y-1"></div>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="text-lg font-medium text-gray-700">System Length</h3>
+                    <div id="lengthResults" class="text-gray-600 space-y-1"></div>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="text-lg font-medium text-gray-700">System Height</h3>
+                    <div id="heightResults" class="text-gray-600 space-y-1"></div>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="text-lg font-medium text-gray-700">Final System Dimensions</h3>
+                    <div id="dimensionsResults" class="text-gray-600 space-y-1"></div>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="text-lg font-medium text-gray-700">Stone Calculations</h3>
+                    <div id="stoneResults" class="text-gray-600 space-y-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Pyodide and load the calculator
+        async function initPyodide() {
+            let pyodide = await loadPyodide();
+            await pyodide.loadPackage("numpy");
+            
+            // Load the Python calculator code
+            const response = await fetch('stonesyscalc.py');
+            const pythonCode = await response.text();
+            pyodide.runPython(pythonCode);
+            
+            return pyodide;
+        }
+
+        let pyodideInstance = null;
+        
+        // Initialize on page load
+        window.addEventListener('load', async () => {
+            try {
+                pyodideInstance = await initPyodide();
+                console.log('Pyodide initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Pyodide:', error);
+            }
+        });
+
+        // Calculate function
+        async function calculate() {
+            if (!pyodideInstance) {
+                console.error('Pyodide not initialized');
+                return;
+            }
+
+            // Get input values
+            const inputs = {
+                HEIGHT_INCHES: parseFloat(document.getElementById('height').value),
+                WIDTH_INCHES: parseFloat(document.getElementById('width').value),
+                LENGTH_INCHES: parseFloat(document.getElementById('length').value),
+                END_CAP_LENGTH_INCHES: parseFloat(document.getElementById('endCapLength').value),
+                QUANTITY_FACING_LONG_LENGTH: parseInt(document.getElementById('columns').value),
+                QUANTITY_FACING_SHORT_WIDTH: parseInt(document.getElementById('rows').value),
+                STONE_LANE_ENDS_INCHES: parseFloat(document.getElementById('laneEndsStone').value),
+                STONE_BETWEEN_LANES_INCHES: parseFloat(document.getElementById('betweenLanesStone').value),
+                STONE_END_CAPS_INCHES: parseFloat(document.getElementById('endCapsStone').value),
+                STONE_BOTTOM_INCHES: parseFloat(document.getElementById('bottomStone').value),
+                STONE_TOP_INCHES: parseFloat(document.getElementById('topStone').value)
+            };
+
+            try {
+                // Run calculations
+                const results = pyodideInstance.runPython(`
+                    # Update variables
+                    HEIGHT_INCHES = ${inputs.HEIGHT_INCHES}
+                    WIDTH_INCHES = ${inputs.WIDTH_INCHES}
+                    LENGTH_INCHES = ${inputs.LENGTH_INCHES}
+                    END_CAP_LENGTH_INCHES = ${inputs.END_CAP_LENGTH_INCHES}
+                    QUANTITY_FACING_LONG_LENGTH = ${inputs.QUANTITY_FACING_LONG_LENGTH}
+                    QUANTITY_FACING_SHORT_WIDTH = ${inputs.QUANTITY_FACING_SHORT_WIDTH}
+                    STONE_LANE_ENDS_INCHES = ${inputs.STONE_LANE_ENDS_INCHES}
+                    STONE_BETWEEN_LANES_INCHES = ${inputs.STONE_BETWEEN_LANES_INCHES}
+                    STONE_END_CAPS_INCHES = ${inputs.STONE_END_CAPS_INCHES}
+                    STONE_BOTTOM_INCHES = ${inputs.STONE_BOTTOM_INCHES}
+                    STONE_TOP_INCHES = ${inputs.STONE_TOP_INCHES}
+
+                    # Recalculate all values
+                    # [Rest of the Python calculation code will be here]
+                    # For now, we'll return some example values
+                    {
+                        'width': {
+                            'units': f"{QUANTITY_FACING_SHORT_WIDTH} × {width_feet:.2f} ft = {system_units_width:.4f} ft",
+                            'stone_between': f"{QUANTITY_FACING_SHORT_WIDTH-1} × {stone_between_lanes_feet:.2f} ft = {system_stone_between_width:.4f} ft",
+                            'stone_ends': f"2 × {stone_lane_ends_feet:.2f} ft = {system_stone_ends_width:.4f} ft",
+                            'total': f"{total_system_width:.4f} ft"
+                        },
+                        'length': {
+                            'units': f"{QUANTITY_FACING_LONG_LENGTH} × {length_feet:.2f} ft = {system_units_length:.4f} ft",
+                            'end_caps': f"2 × {end_cap_length_feet:.2f} ft = {system_end_caps_length:.4f} ft",
+                            'stone_ends': f"2 × {stone_end_caps_feet:.2f} ft = {system_stone_ends_length:.4f} ft",
+                            'total': f"{total_system_length:.4f} ft"
+                        },
+                        'height': {
+                            'top_stone': f"{stone_top_feet:.2f} ft",
+                            'unit': f"{height_feet:.2f} ft",
+                            'bottom_stone': f"{stone_bottom_feet:.2f} ft",
+                            'total': f"{total_system_height:.2f} ft"
+                        },
+                        'dimensions': {
+                            'width': f"{total_system_width:.4f} ft",
+                            'length': f"{total_system_length:.4f} ft",
+                            'height': f"{total_system_height:.2f} ft",
+                            'area': f"{system_area_sf:.4f} sf",
+                            'volume': f"{system_volume_cf:.4f} cf"
+                        },
+                        'stone': {
+                            'chamber_volume': f"{Total_Chamber_Volume_CF:.4f} cf",
+                            'leftover_volume': f"{leftover_stone_volume_cf:.4f} cf",
+                            'depth': f"{stone_depth_feet:.4f} ft",
+                            'depth_yards': f"{stone_depth_yards:.4f} yards³",
+                            'loose_quantity': f"{stone_loose_quantity:.4f} tons",
+                            'compacted': f"{stone_compacted_quantity:.4f} tons",
+                            'total': f"{total_stone_quantity:.4f} tons"
+                        }
+                    }
+                `);
+
+                // Display results
+                document.getElementById('results').classList.remove('hidden');
+                
+                // Update width results
+                const widthResults = document.getElementById('widthResults');
+                widthResults.innerHTML = `
+                    <p>Units: ${results.get('width').get('units')}</p>
+                    <p>Stone In Between: ${results.get('width').get('stone_between')}</p>
+                    <p>Stone Ends: ${results.get('width').get('stone_ends')}</p>
+                    <p class="font-medium">Total Width: ${results.get('width').get('total')}</p>
+                `;
+
+                // Update length results
+                const lengthResults = document.getElementById('lengthResults');
+                lengthResults.innerHTML = `
+                    <p>Units: ${results.get('length').get('units')}</p>
+                    <p>End Caps: ${results.get('length').get('end_caps')}</p>
+                    <p>Stone Ends: ${results.get('length').get('stone_ends')}</p>
+                    <p class="font-medium">Total Length: ${results.get('length').get('total')}</p>
+                `;
+
+                // Update height results
+                const heightResults = document.getElementById('heightResults');
+                heightResults.innerHTML = `
+                    <p>Top Stone: ${results.get('height').get('top_stone')}</p>
+                    <p>Unit: ${results.get('height').get('unit')}</p>
+                    <p>Bottom Stone: ${results.get('height').get('bottom_stone')}</p>
+                    <p class="font-medium">Total Height: ${results.get('height').get('total')}</p>
+                `;
+
+                // Update dimensions results
+                const dimensionsResults = document.getElementById('dimensionsResults');
+                dimensionsResults.innerHTML = `
+                    <p>Width: ${results.get('dimensions').get('width')}</p>
+                    <p>Length: ${results.get('dimensions').get('length')}</p>
+                    <p>Height: ${results.get('dimensions').get('height')}</p>
+                    <p>Area: ${results.get('dimensions').get('area')}</p>
+                    <p>Volume: ${results.get('dimensions').get('volume')}</p>
+                `;
+
+                // Update stone results
+                const stoneResults = document.getElementById('stoneResults');
+                stoneResults.innerHTML = `
+                    <p>Total Chamber Volume: ${results.get('stone').get('chamber_volume')}</p>
+                    <p>Leftover Stone Volume: ${results.get('stone').get('leftover_volume')}</p>
+                    <p>Stone Depth: ${results.get('stone').get('depth')}</p>
+                    <p>Stone Depth (yards): ${results.get('stone').get('depth_yards')}</p>
+                    <p>Stone Loose Quantity: ${results.get('stone').get('loose_quantity')}</p>
+                    <p>Stone Compacted: ${results.get('stone').get('compacted')}</p>
+                    <p class="font-medium">Total Stone Required: ${results.get('stone').get('total')}</p>
+                `;
+
+            } catch (error) {
+                console.error('Error running calculations:', error);
+            }
+        }
+
+        // Add event listener to calculate button
+        document.getElementById('calculate').addEventListener('click', calculate);
+    </script>
+</body>
+</html> 
