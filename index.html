@@ -3,50 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construction Calculators</title>
+    <title>Construction Tools</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">Construction Calculators</h1>
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <h1 class="text-5xl font-bold text-gray-800 mb-6 text-center">Construction Tools</h1>
+        <p class="text-xl text-gray-600 mb-12 text-center">Professional tools for construction material calculations and management</p>
         
-        <div class="grid gap-6">
-            <a href="/path" 
-               class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-2">Asphalt Calculator</h2>
-                <p class="text-gray-600">Calculate asphalt tonnage for your projects</p>
-            </a>
-
-            <a href="/flatwork" 
-               class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-2">Concrete Flatwork Calculator</h2>
-                <p class="text-gray-600">Calculate concrete volume for flatwork</p>
-            </a>
-
-            <a href="/monocurb" 
-               class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-2">Monolithic Curb Calculator</h2>
-                <p class="text-gray-600">Calculate concrete volume for monolithic curbs</p>
-            </a>
-
-            <a href="/process" 
-               class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-2">Aggregate Calculator</h2>
-                <p class="text-gray-600">Calculate tonnage for various aggregate materials using data from the materials database</p>
-            </a>
-
-            <a href="/stonesys" 
-               class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-2">Stone System Calculator</h2>
-                <p class="text-gray-600">Calculate dimensions and stone requirements for stone systems</p>
+        <div class="grid md:grid-cols-2 gap-8">
+            <a href="/calculators" 
+               class="bg-white rounded-lg shadow-md p-8 hover:shadow-xl transition-shadow transform hover:-translate-y-1 duration-300">
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2 text-center">Construction Calculators</h2>
+                    <p class="text-gray-600 text-center">Access a suite of specialized calculators for asphalt, concrete, aggregates, and more</p>
+                </div>
             </a>
 
             <a href="/aggregates" 
-               class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-2">Aggregate Materials Database</h2>
-                <p class="text-gray-600">View and manage aggregate materials and their properties used by the calculator</p>
+               class="bg-white rounded-lg shadow-md p-8 hover:shadow-xl transition-shadow transform hover:-translate-y-1 duration-300">
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2 text-center">Aggregate Materials Database</h2>
+                    <p class="text-gray-600 text-center">Manage your aggregate materials database with properties used by the calculators</p>
+                </div>
             </a>
         </div>
+        
+        <footer class="mt-16 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Construction Tools. All rights reserved.</p>
+        </footer>
     </div>
 </body>
 </html> 
