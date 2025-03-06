@@ -11,50 +11,53 @@
         <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Aggregate Calculator</h1>
         
         <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="mb-4 flex justify-between items-center">
+                <p class="text-gray-600">Calculate aggregate tonnage</p>
+                <a href="/" class="text-blue-600 hover:text-blue-800">Back to Home</a>
+            </div>
+            
+            <div id="statusMessage" class="mb-4 p-3 bg-blue-50 text-blue-700 rounded">
+                Loading materials from database...
+            </div>
+            
             <form id="calculatorForm" class="space-y-4">
                 <div>
                     <label for="length" class="block text-sm font-medium text-gray-700">Length (feet)</label>
                     <input type="number" id="length" name="length" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
                         placeholder="Enter length">
                 </div>
 
                 <div>
                     <label for="width" class="block text-sm font-medium text-gray-700">Width (feet)</label>
                     <input type="number" id="width" name="width" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
                         placeholder="Enter width">
                 </div>
 
                 <div>
                     <label for="depth" class="block text-sm font-medium text-gray-700">Depth (inches)</label>
                     <input type="number" id="depth" name="depth" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
                         placeholder="Enter depth">
                 </div>
 
                 <div>
                     <label for="material" class="block text-sm font-medium text-gray-700">Material Type</label>
                     <select id="material" name="material" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
                         <option value="">Select material...</option>
-                        <option value="crushed_stone">Crushed Stone</option>
-                        <option value="processed_stone">Processed Stone</option>
-                        <option value="screenings">Screenings</option>
-                        <option value="surge_stone">Surge Stone</option>
-                        <option value="riprap">Riprap</option>
-                        <option value="bank_run_gravel">Bank Run Gravel</option>
-                        <option value="screened_sand">Screened Sand</option>
+                        <!-- Material options will be populated from API -->
                     </select>
                 </div>
 
                 <div>
                     <label for="compaction" class="block text-sm font-medium text-gray-700">Compaction State</label>
                     <select id="compaction" name="compaction" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
                         <option value="">Select compaction state...</option>
                         <option value="loose">Loose</option>
-                        <option value="compacted_95">Compacted (95%)</option>
+                        <option value="compacted">Compacted (95%)</option>
                     </select>
                 </div>
 
@@ -62,50 +65,353 @@
                     <h2 class="text-lg font-semibold text-gray-700 mb-2">Result:</h2>
                     <p id="result" class="text-2xl font-bold text-blue-600">0.00 tons</p>
                 </div>
+                
+                <div class="mt-4 text-sm text-gray-500">
+                    <p>Material data is sourced from the <a href="/aggregates" class="text-blue-600 hover:underline">Aggregate Materials Database</a>.</p>
+                </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Material densities in tons per cubic yard
-        const materialDensities = {
-            "crushed_stone": {"loose": 1.30, "compacted_95": 1.42},
-            "processed_stone": {"loose": 1.50, "compacted_95": 1.95},
-            "screenings": {"loose": 1.40, "compacted_95": 1.60},
-            "surge_stone": {"loose": 1.35, "compacted_95": 1.65},
-            "riprap": {"loose": 1.35, "compacted_95": null},
-            "bank_run_gravel": {"loose": 1.38, "compacted_95": 1.65},
-            "screened_sand": {"loose": 1.58, "compacted_95": 1.75}
+        // API Base URL - same as used in the aggregates page
+        const API_BASE_URL = 'https://826915b2-8e9c-47e4-9ba0-a3facfcafe7a-00-gdls78kk3g7z.picard.replit.dev/api';
+        
+        // Will store materials fetched from API
+        let materials = [];
+        
+        // Local API data (simulated API response)
+        const localApiData = [
+            {
+                id: "crushed_stone",
+                name: "Crushed Stone",
+                category: "Coarse Aggregate",
+                looseDensity: 1.30,
+                compactedDensity: 1.42
+            },
+            {
+                id: "processed_stone",
+                name: "Processed Stone",
+                category: "Base Material",
+                looseDensity: 1.50,
+                compactedDensity: 1.95
+            },
+            {
+                id: "screenings",
+                name: "Screenings",
+                category: "Fine Aggregate",
+                looseDensity: 1.40,
+                compactedDensity: 1.60
+            },
+            {
+                id: "surge_stone",
+                name: "Surge Stone",
+                category: "Coarse Aggregate",
+                looseDensity: 1.35,
+                compactedDensity: 1.65
+            },
+            {
+                id: "riprap",
+                name: "Riprap",
+                category: "Coarse Aggregate",
+                looseDensity: 1.35,
+                compactedDensity: null
+            },
+            {
+                id: "bank_run_gravel",
+                name: "Bank Run Gravel",
+                category: "Base Material",
+                looseDensity: 1.38,
+                compactedDensity: 1.65
+            },
+            {
+                id: "screened_sand",
+                name: "Screened Sand",
+                category: "Fine Aggregate",
+                looseDensity: 1.58,
+                compactedDensity: 1.75
+            }
+        ];
+        
+        // Fallback material densities in case API fails
+        const fallbackMaterialDensities = {
+            "crushed_stone": {"loose": 1.30, "compacted": 1.42},
+            "processed_stone": {"loose": 1.50, "compacted": 1.95},
+            "screenings": {"loose": 1.40, "compacted": 1.60},
+            "surge_stone": {"loose": 1.35, "compacted": 1.65},
+            "riprap": {"loose": 1.35, "compacted": null},
+            "bank_run_gravel": {"loose": 1.38, "compacted": 1.65},
+            "screened_sand": {"loose": 1.58, "compacted": 1.75}
         };
-
-        function calculateTons(length, width, depth, material, compactionState) {
+        
+        // Update status message
+        function updateStatus(message, isError = false) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            
+            if (isError) {
+                statusMessage.classList.remove('bg-blue-50', 'text-blue-700');
+                statusMessage.classList.add('bg-red-50', 'text-red-700');
+            } else {
+                statusMessage.classList.remove('bg-red-50', 'text-red-700');
+                statusMessage.classList.add('bg-blue-50', 'text-blue-700');
+            }
+            
+            // Update the data source indicator
+            updateDataSourceIndicator();
+        }
+        
+        // Update data source indicator
+        function updateDataSourceIndicator() {
+            // Early return to hide the indicator
+            return;
+            
+            // Remove existing indicator if any
+            const existingIndicator = document.getElementById('dataSourceIndicator');
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+            
+            // Create new indicator
+            const indicator = document.createElement('div');
+            indicator.id = 'dataSourceIndicator';
+            indicator.className = 'mt-4 p-3 rounded text-sm';
+            
+            // Determine data source
+            let source, bgColor, textColor;
+            if (materials.length === 0) {
+                source = 'No data loaded';
+                bgColor = 'bg-gray-50';
+                textColor = 'text-gray-700';
+            } else if (materials === localApiData) {
+                source = 'Using local database (API unavailable)';
+                bgColor = 'bg-yellow-50';
+                textColor = 'text-yellow-700';
+            } else if (Object.keys(materials[0]).includes('category')) {
+                source = 'Connected to remote database';
+                bgColor = 'bg-green-50';
+                textColor = 'text-green-700';
+            } else {
+                source = 'Using fallback data (database unavailable)';
+                bgColor = 'bg-red-50';
+                textColor = 'text-red-700';
+            }
+            
+            indicator.className += ` ${bgColor} ${textColor}`;
+            indicator.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-3 h-3 rounded-full ${bgColor === 'bg-green-50' ? 'bg-green-500' : bgColor === 'bg-yellow-50' ? 'bg-yellow-500' : 'bg-red-500'} mr-2"></div>
+                    <span><strong>Data Source:</strong> ${source}</span>
+                </div>
+                <div class="mt-1">
+                    <span><strong>Materials:</strong> ${materials.length} items loaded</span>
+                </div>
+            `;
+            
+            // Add to page
+            const form = document.getElementById('calculatorForm');
+            form.appendChild(indicator);
+        }
+        
+        // Fetch materials from API
+        async function fetchMaterials() {
+            try {
+                updateStatus('Loading materials from database...');
+                
+                // First, try to fetch from the remote API
+                try {
+                    const response = await fetch(`${API_BASE_URL}/aggregates`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        mode: 'cors'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const responseText = await response.text();
+                    console.log('API Response:', responseText); // Debug log
+                    
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                        console.log('Parsed data:', data); // Debug log
+                    } catch (parseError) {
+                        throw new Error('Failed to parse JSON: ' + parseError.message);
+                    }
+                    
+                    // Check if data is an array (direct response) or has a value property
+                    materials = Array.isArray(data) ? data : (data.value || []);
+                    console.log('Materials array:', materials); // Debug log
+                    
+                    // Ensure each material has the required properties
+                    materials = materials.map(material => {
+                        // Make sure we have a valid name
+                        if (!material.name && material.id) {
+                            material.name = String(material.id).split('_')
+                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(' ');
+                        }
+                        
+                        // Ensure ID is a string
+                        if (material.id !== undefined) {
+                            material.id = String(material.id);
+                        }
+                        
+                        return material;
+                    });
+                    
+                    if (materials.length === 0) {
+                        throw new Error('No materials found in database');
+                    }
+                    
+                    updateStatus(`${materials.length} materials loaded from remote database`);
+                    populateMaterialDropdown();
+                    return; // Exit the function if API call was successful
+                } catch (apiError) {
+                    console.error('Remote API Error:', apiError);
+                    console.log('Trying local API data...');
+                    
+                    // Try local API data
+                    materials = localApiData;
+                    console.log('Using local API data:', materials);
+                    updateStatus(`${materials.length} materials loaded from local database`, false);
+                    populateMaterialDropdown();
+                    return;
+                }
+            } catch (error) {
+                console.error('Error fetching materials:', error);
+                updateStatus(`Error loading materials: ${error.message}. Using fallback data.`, true);
+                
+                // Use fallback data as last resort
+                materials = Object.entries(fallbackMaterialDensities).map(([id, densities]) => ({
+                    id: String(id),
+                    name: id.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+                    looseDensity: densities.loose,
+                    compactedDensity: densities.compacted
+                }));
+                
+                console.log('Using fallback materials:', materials); // Debug log
+                populateMaterialDropdown();
+            }
+        }
+        
+        // Populate material dropdown with options from API
+        function populateMaterialDropdown() {
+            const materialSelect = document.getElementById('material');
+            console.log('Populating dropdown with materials:', materials); // Debug log
+            
+            // Clear existing options except the first one
+            while (materialSelect.options.length > 1) {
+                materialSelect.remove(1);
+            }
+            
+            // Add materials from API as options
+            materials.forEach(material => {
+                console.log('Adding material to dropdown:', material); // Debug individual material
+                
+                const option = document.createElement('option');
+                // Ensure ID is a string
+                option.value = String(material.id);
+                
+                // Make sure we have a valid name, or create one from the ID
+                const displayName = material.name || 
+                    (material.id ? String(material.id).split('_').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Unknown Material');
+                
+                option.textContent = displayName;
+                materialSelect.appendChild(option);
+                
+                console.log(`Added option: value=${option.value}, text=${option.textContent}`); // Debug option
+            });
+            
+            // Log the final state of the dropdown
+            console.log('Dropdown populated. Options:', Array.from(materialSelect.options).map(opt => ({
+                value: opt.value,
+                text: opt.textContent
+            })));
+            
+            // Enable the form
+            document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
+                input.disabled = false;
+            });
+        }
+        
+        // Calculate tonnage based on dimensions and material properties
+        function calculateTons(length, width, depth, materialId, compactionState) {
             // Convert cubic feet to cubic yards (1 cubic yard = 27 cubic feet)
             const volumeCubicYards = (length * width * (depth / 12)) / 27;
             
-            // Get material density
-            const materialDensity = materialDensities[material]?.[compactionState];
+            console.log('Looking for material with ID:', materialId); // Debug log
+            console.log('Available materials:', materials.map(m => ({ id: m.id, name: m.name }))); // Debug log
             
-            if (materialDensity === undefined || materialDensity === null) {
-                throw new Error(`Compaction state '${compactionState}' is not available for ${material}.`);
+            // Find the selected material - handle both string and numeric IDs
+            const material = materials.find(m => 
+                m.id === materialId || // Exact match
+                m.id === String(materialId) || // String conversion
+                String(m.id) === materialId // String conversion
+            );
+            
+            if (!material) {
+                throw new Error(`Material with ID ${materialId} not found. Please select a valid material.`);
             }
-
+            
+            console.log('Selected material:', material); // Debug log
+            
+            // Get density based on compaction state
+            let density;
+            if (compactionState === 'loose') {
+                density = material.looseDensity;
+            } else if (compactionState === 'compacted') {
+                density = material.compactedDensity;
+            }
+            
+            console.log(`Using ${compactionState} density:`, density); // Debug log
+            
+            if (density === undefined || density === null) {
+                throw new Error(`Compaction state '${compactionState}' is not available for ${material.name}`);
+            }
+            
             // Convert volume to tons
-            return volumeCubicYards * materialDensity;
+            const result = volumeCubicYards * density;
+            console.log(`Calculation: ${volumeCubicYards} cubic yards × ${density} tons/cy = ${result} tons`); // Debug log
+            return result;
         }
-
+        
+        // Update result based on form inputs
         function updateResult() {
             const length = parseFloat(document.getElementById('length').value) || 0;
             const width = parseFloat(document.getElementById('width').value) || 0;
             const depth = parseFloat(document.getElementById('depth').value) || 0;
             const material = document.getElementById('material').value;
             const compaction = document.getElementById('compaction').value;
-
+            
+            console.log('Form values:', { length, width, depth, material, compaction }); // Debug form values
+            
             try {
                 if (length && width && depth && material && compaction) {
                     const tons = calculateTons(length, width, depth, material, compaction);
                     document.getElementById('result').textContent = `${tons.toFixed(2)} tons`;
                     document.getElementById('result').classList.remove('text-red-600');
                     document.getElementById('result').classList.add('text-blue-600');
+                } else {
+                    // Show which values are missing
+                    const missing = [];
+                    if (!length) missing.push('Length');
+                    if (!width) missing.push('Width');
+                    if (!depth) missing.push('Depth');
+                    if (!material) missing.push('Material');
+                    if (!compaction) missing.push('Compaction State');
+                    
+                    if (missing.length > 0) {
+                        document.getElementById('result').textContent = `Please enter: ${missing.join(', ')}`;
+                    } else {
+                        document.getElementById('result').textContent = '0.00 tons';
+                    }
                 }
             } catch (error) {
                 document.getElementById('result').textContent = error.message;
@@ -113,11 +419,32 @@
                 document.getElementById('result').classList.add('text-red-600');
             }
         }
-
-        // Add event listeners to all inputs
-        document.querySelectorAll('input, select').forEach(input => {
-            input.addEventListener('input', updateResult);
-            input.addEventListener('change', updateResult);
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page initialized'); // Debug log
+            
+            // Disable form inputs until materials are loaded
+            document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
+                input.disabled = true;
+            });
+            
+            // Add event listeners to form inputs
+            document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
+                input.addEventListener('input', updateResult);
+                input.addEventListener('change', updateResult);
+            });
+            
+            // Fetch materials from API
+            fetchMaterials()
+                .then(() => {
+                    console.log('Materials loaded successfully');
+                    // Force an update of the result to show any validation messages
+                    updateResult();
+                })
+                .catch(error => {
+                    console.error('Failed to load materials:', error);
+                });
         });
     </script>
 </body>

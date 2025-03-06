@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #343a40;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            background-color: #f1f3f5;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #6c757d;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 20px;
+        }
+        .action-buttons {
+            white-space: nowrap;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+        }
+        .payment-type-fields {
+            display: none;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Employee Management System</h1>
+        
+        <!-- Add Employee Button -->
+        <div class="d-flex justify-content-end mb-3">
+            <button id="addEmployeeBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#employeeModal">
+                <i class="bi bi-plus-circle"></i> Add Employee
+            </button>
+        </div>
+        
+        <!-- Employee Table Card -->
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0">Employee Directory</h5>
+            </div>
+            <div class="card-body p-0">
+                <div id="loading" class="loading">Loading employee data...</div>
+                <div id="error" class="error" style="display: none;"></div>
+                <table id="employeeTable" class="table table-striped table-hover" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Job Position</th>
+                            <th>Payment Type</th>
+                            <th>Salary</th>
+                            <th>Hourly Rate</th>
+                            <th>Contact Info</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <!-- Employee data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Modal (Add/Edit) -->
+    <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="employeeModalLabel">Add Employee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="employeeForm">
+                        <input type="hidden" id="employeeId">
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="jobPosition" class="form-label">Job Position</label>
+                            <input type="text" class="form-control" id="jobPosition" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contactInfo" class="form-label">Contact Info</label>
+                            <input type="text" class="form-control" id="contactInfo" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentType" class="form-label">Payment Type</label>
+                            <select class="form-select" id="paymentType" required>
+                                <option value="">Select payment type</option>
+                                <option value="salary">Salary</option>
+                                <option value="hourly">Hourly</option>
+                            </select>
+                        </div>
+                        
+                        <div id="salaryField" class="mb-3 payment-type-fields">
+                            <label for="salary" class="form-label">Salary (Annual)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="salary" min="0" step="1000">
+                            </div>
+                        </div>
+                        
+                        <div id="hourlyField" class="mb-3 payment-type-fields">
+                            <label for="hourlyRate" class="form-label">Hourly Rate</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="hourlyRate" min="0" step="0.01">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveEmployee">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this employee? This action cannot be undone.</p>
+                    <p id="deleteEmployeeName" class="fw-bold"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container for Notifications -->
+    <div class="toast-container">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // API URL
+            const apiUrl = 'https://4a2fd583-38ef-4641-8aff-18a84a1c0118-00-10u1xax89k4pn.kirk.replit.dev/employees';
+            
+            // DOM Elements
+            const tableBody = document.getElementById('employeeTableBody');
+            const table = document.getElementById('employeeTable');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const employeeForm = document.getElementById('employeeForm');
+            const employeeModal = new bootstrap.Modal(document.getElementById('employeeModal'));
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            const toast = new bootstrap.Toast(document.getElementById('toast'));
+            
+            // Form Elements
+            const employeeId = document.getElementById('employeeId');
+            const nameInput = document.getElementById('name');
+            const jobPositionInput = document.getElementById('jobPosition');
+            const contactInfoInput = document.getElementById('contactInfo');
+            const paymentTypeSelect = document.getElementById('paymentType');
+            const salaryInput = document.getElementById('salary');
+            const hourlyRateInput = document.getElementById('hourlyRate');
+            const salaryField = document.getElementById('salaryField');
+            const hourlyField = document.getElementById('hourlyField');
+            
+            // Buttons
+            const saveEmployeeBtn = document.getElementById('saveEmployee');
+            const confirmDeleteBtn = document.getElementById('confirmDelete');
+            const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+            
+            // Toast Elements
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            // Current employee being deleted
+            let currentDeleteId = null;
+            
+            // Function to format currency
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2
+                }).format(amount);
+            }
+            
+            // Function to show toast notification
+            function showToast(title, message, type = 'success') {
+                toastTitle.textContent = title;
+                toastMessage.textContent = message;
+                
+                const toastElement = document.getElementById('toast');
+                toastElement.className = 'toast';
+                toastElement.classList.add(`text-bg-${type}`);
+                
+                toast.show();
+            }
+            
+            // Function to load employees
+            function loadEmployees() {
+                // Show loading
+                loading.style.display = 'block';
+                table.style.display = 'none';
+                error.style.display = 'none';
+                
+                // Fetch employees data
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(employees => {
+                        // Make sure employees is an array
+                        if (!Array.isArray(employees)) {
+                            employees = [employees]; // Convert single object to array
+                        }
+                        
+                        // Clear loading message
+                        loading.style.display = 'none';
+                        
+                        // Display the table
+                        table.style.display = 'table';
+                        
+                        // Clear existing rows
+                        tableBody.innerHTML = '';
+                        
+                        // Populate table with employee data
+                        employees.forEach(employee => {
+                            const row = document.createElement('tr');
+                            
+                            // Create table cells
+                            row.innerHTML = `
+                                <td>${employee.id}</td>
+                                <td>${employee.name}</td>
+                                <td>${employee.job_position}</td>
+                                <td>${employee.payment_type}</td>
+                                <td>${employee.payment_type === 'salary' ? formatCurrency(employee.salary) : '-'}</td>
+                                <td>${employee.payment_type === 'hourly' ? formatCurrency(employee.hourly_rate) : '-'}</td>
+                                <td>${employee.contact_info}</td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${employee.id}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${employee.id}" data-name="${employee.name}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            `;
+                            
+                            tableBody.appendChild(row);
+                        });
+                        
+                        // Add event listeners to edit and delete buttons
+                        addActionButtonListeners();
+                    })
+                    .catch(err => {
+                        // Display error message
+                        loading.style.display = 'none';
+                        error.textContent = `Error loading employee data: ${err.message}`;
+                        error.style.display = 'block';
+                        console.error('Error fetching employee data:', err);
+                    });
+            }
+            
+            // Function to add event listeners to action buttons
+            function addActionButtonListeners() {
+                // Edit buttons
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        editEmployee(id);
+                    });
+                });
+                
+                // Delete buttons
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const name = this.getAttribute('data-name');
+                        showDeleteConfirmation(id, name);
+                    });
+                });
+            }
+            
+            // Function to show delete confirmation
+            function showDeleteConfirmation(id, name) {
+                currentDeleteId = id;
+                document.getElementById('deleteEmployeeName').textContent = name;
+                deleteModal.show();
+            }
+            
+            // Function to delete employee
+            function deleteEmployee(id) {
+                fetch(`${apiUrl}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete employee');
+                    }
+                    
+                    // Show success message
+                    showToast('Success', 'Employee deleted successfully');
+                    
+                    // Reload employees
+                    loadEmployees();
+                })
+                .catch(err => {
+                    console.error('Error deleting employee:', err);
+                    showToast('Error', `Failed to delete employee: ${err.message}`, 'danger');
+                });
+            }
+            
+            // Function to edit employee
+            function editEmployee(id) {
+                // Reset form
+                employeeForm.reset();
+                
+                // Set modal title
+                document.getElementById('employeeModalLabel').textContent = 'Edit Employee';
+                
+                // Fetch employee data
+                fetch(`${apiUrl}/${id}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch employee data');
+                        }
+                        return response.json();
+                    })
+                    .then(employee => {
+                        // Populate form
+                        employeeId.value = employee.id;
+                        nameInput.value = employee.name;
+                        jobPositionInput.value = employee.job_position;
+                        contactInfoInput.value = employee.contact_info;
+                        paymentTypeSelect.value = employee.payment_type;
+                        
+                        // Show appropriate payment fields
+                        togglePaymentFields(employee.payment_type);
+                        
+                        // Set payment values
+                        if (employee.payment_type === 'salary') {
+                            salaryInput.value = employee.salary;
+                        } else if (employee.payment_type === 'hourly') {
+                            hourlyRateInput.value = employee.hourly_rate;
+                        }
+                        
+                        // Show modal
+                        employeeModal.show();
+                    })
+                    .catch(err => {
+                        console.error('Error fetching employee data:', err);
+                        showToast('Error', `Failed to load employee data: ${err.message}`, 'danger');
+                    });
+            }
+            
+            // Function to toggle payment fields based on payment type
+            function togglePaymentFields(paymentType) {
+                if (paymentType === 'salary') {
+                    salaryField.style.display = 'block';
+                    hourlyField.style.display = 'none';
+                    salaryInput.required = true;
+                    hourlyRateInput.required = false;
+                } else if (paymentType === 'hourly') {
+                    salaryField.style.display = 'none';
+                    hourlyField.style.display = 'block';
+                    salaryInput.required = false;
+                    hourlyRateInput.required = true;
+                } else {
+                    salaryField.style.display = 'none';
+                    hourlyField.style.display = 'none';
+                    salaryInput.required = false;
+                    hourlyRateInput.required = false;
+                }
+            }
+            
+            // Function to save employee (create or update)
+            function saveEmployee() {
+                // Validate form
+                if (!employeeForm.checkValidity()) {
+                    employeeForm.reportValidity();
+                    return;
+                }
+                
+                // Get form values
+                const id = employeeId.value;
+                const name = nameInput.value;
+                const jobPosition = jobPositionInput.value;
+                const contactInfo = contactInfoInput.value;
+                const paymentType = paymentTypeSelect.value;
+                
+                // Create employee object
+                const employee = {
+                    name: name,
+                    job_position: jobPosition,
+                    contact_info: contactInfo,
+                    payment_type: paymentType
+                };
+                
+                // Add payment details based on type
+                if (paymentType === 'salary') {
+                    employee.salary = parseInt(salaryInput.value) || 0;
+                    employee.hourly_rate = 0;
+                } else if (paymentType === 'hourly') {
+                    employee.hourly_rate = parseFloat(hourlyRateInput.value) || 0;
+                    employee.salary = 0;
+                }
+                
+                // Determine if creating or updating
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `${apiUrl}/${id}` : apiUrl;
+                const successMessage = id ? 'Employee updated successfully' : 'Employee created successfully';
+                
+                // Send request
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(employee)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to ${id ? 'update' : 'create'} employee`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Show success message
+                    showToast('Success', successMessage);
+                    
+                    // Close modal
+                    employeeModal.hide();
+                    
+                    // Reload employees
+                    loadEmployees();
+                })
+                .catch(err => {
+                    console.error(`Error ${id ? 'updating' : 'creating'} employee:`, err);
+                    showToast('Error', `Failed to ${id ? 'update' : 'create'} employee: ${err.message}`, 'danger');
+                });
+            }
+            
+            // Event Listeners
+            
+            // Payment type change
+            paymentTypeSelect.addEventListener('change', function() {
+                togglePaymentFields(this.value);
+            });
+            
+            // Add employee button
+            addEmployeeBtn.addEventListener('click', function() {
+                // Reset form
+                employeeForm.reset();
+                employeeId.value = '';
+                
+                // Set modal title
+                document.getElementById('employeeModalLabel').textContent = 'Add Employee';
+                
+                // Reset payment fields
+                togglePaymentFields('');
+            });
+            
+            // Save employee button
+            saveEmployeeBtn.addEventListener('click', saveEmployee);
+            
+            // Confirm delete button
+            confirmDeleteBtn.addEventListener('click', function() {
+                if (currentDeleteId) {
+                    deleteEmployee(currentDeleteId);
+                    deleteModal.hide();
+                }
+            });
+            
+            // Initial load
+            loadEmployees();
+        });
+    </script>
+</body>
+</html> 
