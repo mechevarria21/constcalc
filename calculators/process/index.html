@@ -16,7 +16,7 @@
                 <a href="/calculators" class="text-blue-600 hover:text-blue-800">Back to Calculators</a>
             </div>
             
-            <div id="statusMessage" class="mb-4 p-3 bg-blue-50 text-blue-700 rounded">
+            <div id="statusMessage" class="mb-4 p-3 bg-blue-50 text-blue-700 rounded hidden">
                 Loading materials from database...
             </div>
             
@@ -269,7 +269,8 @@
                         throw new Error('No materials found in database');
                     }
                     
-                    updateStatus(`${materials.length} materials loaded from remote database`);
+                    // Hide status message instead of updating it
+                    document.getElementById('statusMessage').classList.add('hidden');
                     populateMaterialDropdown();
                     return; // Exit the function if API call was successful
                 } catch (apiError) {
@@ -279,13 +280,16 @@
                     // Try local API data
                     materials = localApiData;
                     console.log('Using local API data:', materials);
-                    updateStatus(`${materials.length} materials loaded from local database`, false);
+                    // Hide status message instead of updating it
+                    document.getElementById('statusMessage').classList.add('hidden');
                     populateMaterialDropdown();
                     return;
                 }
             } catch (error) {
                 console.error('Error fetching materials:', error);
+                // Only show status message for errors
                 updateStatus(`Error loading materials: ${error.message}. Using fallback data.`, true);
+                document.getElementById('statusMessage').classList.remove('hidden');
                 
                 // Use fallback data as last resort
                 materials = Object.entries(fallbackMaterialDensities).map(([id, densities]) => ({
@@ -428,6 +432,9 @@
             document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
                 input.disabled = true;
             });
+            
+            // Initially hide the status message
+            document.getElementById('statusMessage').classList.add('hidden');
             
             // Add event listeners to form inputs
             document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
