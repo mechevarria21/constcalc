@@ -5,42 +5,258 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Construction Tools</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 class="text-5xl font-bold text-gray-800 mb-6 text-center">Construction Tools</h1>
-        <p class="text-xl text-gray-600 mb-12 text-center">Professional tools for construction material calculations and management</p>
+    <link rel="stylesheet" href="/styles/theme.css">
+    <link rel="stylesheet" href="/styles/navigation.css">
+    <script src="/styles/theme.js" defer></script>
+    <script src="/styles/navigation.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--dark-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
         
-        <div class="grid md:grid-cols-2 gap-8">
-            <a href="/calculators" 
-               class="bg-white rounded-lg shadow-md p-8 hover:shadow-xl transition-shadow transform hover:-translate-y-1 duration-300">
-                <div class="flex flex-col items-center">
-                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--dark-800) 0%, var(--dark-900) 100%);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-700);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%234361ee' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--dark-700);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--dark-800);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-700);
+        }
+        
+        .feature-icon-container {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card:hover .feature-icon-container {
+            transform: scale(1.1);
+        }
+        
+        .feature-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--dark-100);
+        }
+        
+        .feature-description {
+            color: var(--dark-300);
+            text-align: center;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        
+        .page-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--dark-800);
+        }
+        
+        .main-title {
+            background: linear-gradient(to right, var(--primary-400), var(--accent-400));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            color: var(--dark-300);
+            max-width: 700px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+            font-size: 1.1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-600);
+            border-color: var(--primary-600);
+            padding: 0.5rem 1.25rem;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-700);
+            border-color: var(--primary-700);
+        }
+        
+        .btn-outline {
+            color: var(--primary-400);
+            border-color: var(--dark-600);
+            padding: 0.5rem 1.25rem;
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-color: var(--primary-500);
+        }
+        
+        .social-icon {
+            transition: all 0.2s ease;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--dark-800);
+        }
+        
+        .social-icon:hover {
+            background-color: var(--dark-700);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-hard-hat" style="color: var(--primary-400);"></i>
+                Construction Tools
+            </a>
+            <div class="nav-links">
+                <a href="/calculators" class="nav-link">Calculators</a>
+                <a href="/aggregates" class="nav-link">Aggregates</a>
+                <a href="/employees" class="nav-link">Employees</a>
+            </div>
+            <button class="mobile-nav-toggle" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-content container mx-auto px-4 py-4 max-w-4xl">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="text-4xl main-title mb-4 text-center">Construction Tools</h1>
+            <p class="subtitle text-center">Professional tools for construction material calculations and management</p>
+            
+            <!-- Quick Action Buttons -->
+            <div class="flex justify-center gap-4 mt-6">
+                <a href="/calculators" class="btn btn-primary">
+                    <i class="fas fa-calculator mr-2"></i> Open Calculators
+                </a>
+                <a href="/aggregates" class="btn btn-outline">
+                    <i class="fas fa-database mr-2"></i> View Materials
+                </a>
+            </div>
+        </div>
+        
+        <!-- Feature Cards -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <a href="/calculators" class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon-container" style="background-color: rgba(67, 97, 238, 0.15);">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--primary-400);">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2 text-center">Construction Calculators</h2>
-                    <p class="text-gray-600 text-center">Access a suite of specialized calculators for asphalt, concrete, aggregates, and more</p>
+                    <h2 class="feature-title">Construction Calculators</h2>
+                    <p class="feature-description">Access a suite of specialized calculators for asphalt, concrete, aggregates, and more</p>
+                    
+                    <div class="mt-auto pt-3">
+                        <span class="inline-flex items-center" style="color: var(--primary-400); font-weight: 500; font-size: 0.9rem;">
+                            Open Calculators <i class="fas fa-arrow-right ml-2"></i>
+                        </span>
+                    </div>
                 </div>
             </a>
 
-            <a href="/aggregates" 
-               class="bg-white rounded-lg shadow-md p-8 hover:shadow-xl transition-shadow transform hover:-translate-y-1 duration-300">
-                <div class="flex flex-col items-center">
-                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a href="/aggregates" class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon-container" style="background-color: rgba(44, 182, 125, 0.15);">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--secondary-400);">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2 text-center">Aggregate Materials Database</h2>
-                    <p class="text-gray-600 text-center">Manage your aggregate materials database with properties used by the calculators</p>
+                    <h2 class="feature-title">Aggregate Materials Database</h2>
+                    <p class="feature-description">Manage your aggregate materials database with properties used by the calculators</p>
+                    
+                    <div class="mt-auto pt-3">
+                        <span class="inline-flex items-center" style="color: var(--secondary-400); font-weight: 500; font-size: 0.9rem;">
+                            View Database <i class="fas fa-arrow-right ml-2"></i>
+                        </span>
+                    </div>
                 </div>
             </a>
         </div>
         
-        <footer class="mt-16 text-center text-gray-500 text-sm">
-            <p>&copy; 2025 Construction Tools. All rights reserved.</p>
+        <!-- Footer -->
+        <footer class="page-footer text-center">
+            <div class="flex justify-center space-x-4 mb-4">
+                <a href="#" class="social-icon">
+                    <i class="fab fa-github" style="color: var(--dark-300);"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fab fa-linkedin" style="color: var(--dark-300);"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fas fa-envelope" style="color: var(--dark-300);"></i>
+                </a>
+            </div>
+            <p class="text-sm" style="color: var(--dark-400);">&copy; 2025 Construction Tools. All rights reserved.</p>
         </footer>
     </div>
 </body>

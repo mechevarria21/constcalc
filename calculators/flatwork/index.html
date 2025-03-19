@@ -5,49 +5,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Concrete Flatwork Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-md">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Concrete Flatwork Calculator</h1>
+    <link rel="stylesheet" href="/styles/theme.css">
+    <link rel="stylesheet" href="/styles/navigation.css">
+    <script src="/styles/theme.js" defer></script>
+    <script src="/styles/navigation.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--dark-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
         
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="mb-4 flex justify-between items-center">
-                <p class="text-gray-600">Calculate concrete volume</p>
-                <a href="/calculators" class="text-blue-600 hover:text-blue-800">Back to Calculators</a>
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .calculator-container {
+            background-color: var(--dark-800);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-700);
+            overflow: hidden;
+        }
+        
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-700);
+        }
+        
+        .calculator-title {
+            background: linear-gradient(to right, var(--primary-400), var(--secondary-400));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-200);
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            background-color: var(--dark-900);
+            border: 1px solid var(--dark-600);
+            border-radius: var(--radius-md);
+            color: var(--dark-100);
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-500);
+            box-shadow: 0 0 0 2px rgba(44, 182, 125, 0.2);
+        }
+        
+        .form-input::placeholder {
+            color: var(--dark-500);
+        }
+        
+        .result-container {
+            background-color: rgba(44, 182, 125, 0.1);
+            border: 1px solid rgba(44, 182, 125, 0.2);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .result-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-200);
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--secondary-400);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-hard-hat" style="color: var(--primary-400);"></i>
+                Construction Tools
+            </a>
+            <div class="nav-links">
+                <a href="/calculators" class="nav-link">Calculators</a>
+                <a href="/aggregates" class="nav-link">Aggregates</a>
+                <a href="/employees" class="nav-link">Employees</a>
+            </div>
+            <button class="mobile-nav-toggle" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-content container mx-auto px-4 py-4 max-w-md">
+        <h1 class="text-3xl calculator-title mb-4 text-center">Concrete Flatwork Calculator</h1>
+        
+        <div class="calculator-container p-6">
+            <div class="calculator-header">
+                <p style="color: var(--dark-300);">Calculate concrete volume</p>
+                <a href="/calculators" class="text-secondary-400 hover:text-secondary-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-1"></i> Back
+                </a>
             </div>
             
-            <form id="calculatorForm" class="space-y-4">
-                <div>
-                    <label for="length" class="block text-sm font-medium text-gray-700">Length (feet)</label>
+            <form id="calculatorForm">
+                <div class="form-group">
+                    <label for="length" class="form-label">Length (feet)</label>
                     <input type="number" id="length" name="length" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        class="form-input"
                         placeholder="Enter length">
                 </div>
 
-                <div>
-                    <label for="width" class="block text-sm font-medium text-gray-700">Width (feet)</label>
+                <div class="form-group">
+                    <label for="width" class="form-label">Width (feet)</label>
                     <input type="number" id="width" name="width" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        class="form-input"
                         placeholder="Enter width">
                 </div>
 
-                <div>
-                    <label for="thickness" class="block text-sm font-medium text-gray-700">Thickness (inches)</label>
+                <div class="form-group">
+                    <label for="thickness" class="form-label">Thickness (inches)</label>
                     <input type="number" id="thickness" name="thickness" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        class="form-input"
                         placeholder="Enter thickness">
                 </div>
 
-                <div>
-                    <label for="spillage" class="block text-sm font-medium text-gray-700">Spillage Factor</label>
+                <div class="form-group">
+                    <label for="spillage" class="form-label">Spillage Factor</label>
                     <input type="number" id="spillage" name="spillage" value="1.05" step="0.01" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        class="form-input"
                         placeholder="Enter spillage factor">
                 </div>
 
-                <div class="mt-6 p-4 bg-gray-50 rounded-md">
-                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Result:</h2>
-                    <p id="result" class="text-2xl font-bold text-blue-600">0.00 cubic yards</p>
+                <div class="result-container">
+                    <h2 class="result-title">Result:</h2>
+                    <p id="result" class="result-value">0.00 cubic yards</p>
                 </div>
             </form>
         </div>

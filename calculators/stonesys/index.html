@@ -6,115 +6,273 @@
     <title>Stone System Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/pyodide@0.24.1/pyodide.js"></script>
-</head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">Stone System Calculator</h1>
+    <link rel="stylesheet" href="/styles/theme.css">
+    <link rel="stylesheet" href="/styles/navigation.css">
+    <script src="/styles/theme.js" defer></script>
+    <script src="/styles/navigation.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--dark-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
         
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <div class="mb-4 flex justify-between items-center">
-                <p class="text-gray-600">Calculate stone system requirements</p>
-                <a href="/calculators" class="text-blue-600 hover:text-blue-800">Back to Calculators</a>
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .calculator-container {
+            background-color: var(--dark-800);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-700);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-700);
+        }
+        
+        .calculator-title {
+            background: linear-gradient(to right, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark-100);
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-200);
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-300);
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            background-color: var(--dark-900);
+            border: 1px solid var(--dark-600);
+            border-radius: var(--radius-md);
+            color: var(--dark-100);
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+        
+        .calculate-btn {
+            background-color: #ef4444;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-top: 1.5rem;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #dc2626;
+        }
+        
+        .results-container {
+            background-color: var(--dark-800);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-700);
+            overflow: hidden;
+            padding: 1.5rem;
+        }
+        
+        .results-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .results-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-100);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--dark-700);
+        }
+        
+        .result-item {
+            color: var(--dark-300);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .result-highlight {
+            color: #ef4444;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-hard-hat" style="color: var(--primary-400);"></i>
+                Construction Tools
+            </a>
+            <div class="nav-links">
+                <a href="/calculators" class="nav-link">Calculators</a>
+                <a href="/aggregates" class="nav-link">Aggregates</a>
+                <a href="/employees" class="nav-link">Employees</a>
+            </div>
+            <button class="mobile-nav-toggle" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-content container mx-auto px-4 py-4 max-w-3xl">
+        <h1 class="text-3xl calculator-title mb-4 text-center">Stone System Calculator</h1>
+        
+        <div class="calculator-container p-6">
+            <div class="calculator-header">
+                <p style="color: var(--dark-300);">Calculate stone system requirements</p>
+                <a href="/calculators" style="color: #ef4444;" class="hover:text-red-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-1"></i> Back
+                </a>
             </div>
             
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">System Specifications</h2>
+            <h2 class="section-title">System Specifications</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <!-- Single Unit Specifications -->
                 <div class="space-y-4">
-                    <h3 class="text-lg font-medium text-gray-700">Single Unit Dimensions</h3>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Height (inches)</label>
-                        <input type="number" id="height" value="45" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <h3 class="subsection-title">Single Unit Dimensions</h3>
+                    <div class="form-group">
+                        <label class="form-label">Height (inches)</label>
+                        <input type="number" id="height" value="45" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Width (inches)</label>
-                        <input type="number" id="width" value="77" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">Width (inches)</label>
+                        <input type="number" id="width" value="77" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Length (inches)</label>
-                        <input type="number" id="length" value="90" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">Length (inches)</label>
+                        <input type="number" id="length" value="90" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">End Cap Length (inches)</label>
-                        <input type="number" id="endCapLength" value="25.7" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">End Cap Length (inches)</label>
+                        <input type="number" id="endCapLength" value="25.7" class="form-input">
                     </div>
                 </div>
 
                 <!-- System Layout -->
                 <div class="space-y-4">
-                    <h3 class="text-lg font-medium text-gray-700">System Layout</h3>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Columns (Long Length)</label>
-                        <input type="number" id="columns" value="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <h3 class="subsection-title">System Layout</h3>
+                    <div class="form-group">
+                        <label class="form-label">Columns (Long Length)</label>
+                        <input type="number" id="columns" value="10" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Rows (Short Width)</label>
-                        <input type="number" id="rows" value="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">Rows (Short Width)</label>
+                        <input type="number" id="rows" value="10" class="form-input">
                     </div>
                 </div>
             </div>
 
             <!-- Stone Specifications -->
             <div class="space-y-4 mb-6">
-                <h3 class="text-lg font-medium text-gray-700">Stone Specifications</h3>
+                <h3 class="subsection-title">Stone Specifications</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Lane Ends Stone (inches)</label>
-                        <input type="number" id="laneEndsStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">Lane Ends Stone (inches)</label>
+                        <input type="number" id="laneEndsStone" value="6" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Between Lanes Stone (inches)</label>
-                        <input type="number" id="betweenLanesStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">Between Lanes Stone (inches)</label>
+                        <input type="number" id="betweenLanesStone" value="6" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">End Caps Stone (inches)</label>
-                        <input type="number" id="endCapsStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">End Caps Stone (inches)</label>
+                        <input type="number" id="endCapsStone" value="6" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Bottom Stone (inches)</label>
-                        <input type="number" id="bottomStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">Bottom Stone (inches)</label>
+                        <input type="number" id="bottomStone" value="6" class="form-input">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Top Stone (inches)</label>
-                        <input type="number" id="topStone" value="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="form-group">
+                        <label class="form-label">Top Stone (inches)</label>
+                        <input type="number" id="topStone" value="6" class="form-input">
                     </div>
                 </div>
             </div>
 
-            <button id="calculate" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <button id="calculate" class="calculate-btn">
                 Calculate
             </button>
         </div>
 
         <!-- Results Section -->
-        <div id="results" class="bg-white rounded-lg shadow-md p-6 space-y-4 hidden">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Results</h2>
+        <div id="results" class="results-container hidden">
+            <h2 class="section-title mb-4">Results</h2>
             
             <div class="space-y-6">
-                <div class="space-y-2">
-                    <h3 class="text-lg font-medium text-gray-700">System Width</h3>
-                    <div id="widthResults" class="text-gray-600 space-y-1"></div>
+                <div class="results-section">
+                    <h3 class="results-section-title">System Width</h3>
+                    <div id="widthResults" class="space-y-1"></div>
                 </div>
 
-                <div class="space-y-2">
-                    <h3 class="text-lg font-medium text-gray-700">System Length</h3>
-                    <div id="lengthResults" class="text-gray-600 space-y-1"></div>
+                <div class="results-section">
+                    <h3 class="results-section-title">System Length</h3>
+                    <div id="lengthResults" class="space-y-1"></div>
                 </div>
 
-                <div class="space-y-2">
-                    <h3 class="text-lg font-medium text-gray-700">System Height</h3>
-                    <div id="heightResults" class="text-gray-600 space-y-1"></div>
+                <div class="results-section">
+                    <h3 class="results-section-title">System Height</h3>
+                    <div id="heightResults" class="space-y-1"></div>
                 </div>
 
-                <div class="space-y-2">
-                    <h3 class="text-lg font-medium text-gray-700">Final System Dimensions</h3>
-                    <div id="dimensionsResults" class="text-gray-600 space-y-1"></div>
+                <div class="results-section">
+                    <h3 class="results-section-title">Final System Dimensions</h3>
+                    <div id="dimensionsResults" class="space-y-1"></div>
                 </div>
 
-                <div class="space-y-2">
-                    <h3 class="text-lg font-medium text-gray-700">Stone Calculations</h3>
-                    <div id="stoneResults" class="text-gray-600 space-y-1"></div>
+                <div class="results-section">
+                    <h3 class="results-section-title">Stone Calculations</h3>
+                    <div id="stoneResults" class="space-y-1"></div>
                 </div>
             </div>
         </div>
@@ -231,54 +389,53 @@
                 // Update width results
                 const widthResults = document.getElementById('widthResults');
                 widthResults.innerHTML = `
-                    <p>Units: ${results.get('width').get('units')}</p>
-                    <p>Stone In Between: ${results.get('width').get('stone_between')}</p>
-                    <p>Stone Ends: ${results.get('width').get('stone_ends')}</p>
-                    <p class="font-medium">Total Width: ${results.get('width').get('total')}</p>
+                    <p class="result-item">Units: ${results.get('width').get('units')}</p>
+                    <p class="result-item">Stone In Between: ${results.get('width').get('stone_between')}</p>
+                    <p class="result-item">Stone Ends: ${results.get('width').get('stone_ends')}</p>
+                    <p class="result-item">Total Width: <span class="result-highlight">${results.get('width').get('total')}</span></p>
                 `;
 
                 // Update length results
                 const lengthResults = document.getElementById('lengthResults');
                 lengthResults.innerHTML = `
-                    <p>Units: ${results.get('length').get('units')}</p>
-                    <p>End Caps: ${results.get('length').get('end_caps')}</p>
-                    <p>Stone Ends: ${results.get('length').get('stone_ends')}</p>
-                    <p class="font-medium">Total Length: ${results.get('length').get('total')}</p>
+                    <p class="result-item">Units: ${results.get('length').get('units')}</p>
+                    <p class="result-item">End Caps: ${results.get('length').get('end_caps')}</p>
+                    <p class="result-item">Stone Ends: ${results.get('length').get('stone_ends')}</p>
+                    <p class="result-item">Total Length: <span class="result-highlight">${results.get('length').get('total')}</span></p>
                 `;
 
                 // Update height results
                 const heightResults = document.getElementById('heightResults');
                 heightResults.innerHTML = `
-                    <p>Top Stone: ${results.get('height').get('top_stone')}</p>
-                    <p>Unit: ${results.get('height').get('unit')}</p>
-                    <p>Bottom Stone: ${results.get('height').get('bottom_stone')}</p>
-                    <p class="font-medium">Total Height: ${results.get('height').get('total')}</p>
+                    <p class="result-item">Top Stone: ${results.get('height').get('top_stone')}</p>
+                    <p class="result-item">Unit: ${results.get('height').get('unit')}</p>
+                    <p class="result-item">Bottom Stone: ${results.get('height').get('bottom_stone')}</p>
+                    <p class="result-item">Total Height: <span class="result-highlight">${results.get('height').get('total')}</span></p>
                 `;
 
                 // Update dimensions results
                 const dimensionsResults = document.getElementById('dimensionsResults');
                 dimensionsResults.innerHTML = `
-                    <p>Width: ${results.get('dimensions').get('width')}</p>
-                    <p>Length: ${results.get('dimensions').get('length')}</p>
-                    <p>Height: ${results.get('dimensions').get('height')}</p>
-                    <p>Area: ${results.get('dimensions').get('area')}</p>
-                    <p>Volume: ${results.get('dimensions').get('volume')}</p>
+                    <p class="result-item">Width: ${results.get('dimensions').get('width')}</p>
+                    <p class="result-item">Length: ${results.get('dimensions').get('length')}</p>
+                    <p class="result-item">Height: ${results.get('dimensions').get('height')}</p>
+                    <p class="result-item">Area: <span class="result-highlight">${results.get('dimensions').get('area')}</span></p>
+                    <p class="result-item">Volume: <span class="result-highlight">${results.get('dimensions').get('volume')}</span></p>
                 `;
 
                 // Update stone results
                 const stoneResults = document.getElementById('stoneResults');
                 stoneResults.innerHTML = `
-                    <p>Total Chamber Volume: ${results.get('stone').get('chamber_volume')}</p>
-                    <p>Leftover Stone Volume: ${results.get('stone').get('leftover_volume')}</p>
-                    <p>Stone Depth: ${results.get('stone').get('depth')}</p>
-                    <p>Stone Depth (yards): ${results.get('stone').get('depth_yards')}</p>
-                    <p>Stone Loose Quantity: ${results.get('stone').get('loose_quantity')}</p>
-                    <p>Stone Compacted: ${results.get('stone').get('compacted')}</p>
-                    <p class="font-medium">Total Stone Required: ${results.get('stone').get('total')}</p>
+                    <p class="result-item">Chamber Volume: ${results.get('stone').get('chamber_volume')}</p>
+                    <p class="result-item">Leftover Volume: ${results.get('stone').get('leftover_volume')}</p>
+                    <p class="result-item">Stone Depth: ${results.get('stone').get('depth')}</p>
+                    <p class="result-item">Stone Depth (cubic yards): ${results.get('stone').get('depth_yards')}</p>
+                    <p class="result-item">Loose Quantity: ${results.get('stone').get('loose_quantity')}</p>
+                    <p class="result-item">Compacted: ${results.get('stone').get('compacted')}</p>
+                    <p class="result-item">Total Stone: <span class="result-highlight">${results.get('stone').get('total')}</span></p>
                 `;
-
             } catch (error) {
-                console.error('Error running calculations:', error);
+                console.error('Calculation error:', error);
             }
         }
 

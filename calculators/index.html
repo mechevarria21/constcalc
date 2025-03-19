@@ -5,88 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Construction Calculators</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/styles/theme.css">
+    <link rel="stylesheet" href="/styles/navigation.css">
+    <script src="/styles/theme.js" defer></script>
+    <script src="/styles/navigation.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--dark-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .main-title {
+            background: linear-gradient(to right, var(--primary-400), var(--accent-400));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+        
+        .subtitle {
+            color: var(--dark-300);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+            font-size: 1.1rem;
+        }
+        
+        .calculator-card {
+            background-color: var(--dark-800);
+            border: 1px solid var(--dark-700);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-700);
+        }
+        
+        .icon-container {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .calculator-card:hover .icon-container {
+            transform: scale(1.1);
+        }
+        
+        .calculator-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-100);
+        }
+        
+        .calculator-description {
+            color: var(--dark-300);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        
+        .page-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--dark-800);
+            text-align: center;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen py-12">
-    <div class="container mx-auto px-4 max-w-4xl">
-        <div class="text-center mb-12">
-            <h1 class="text-5xl font-bold text-gray-800 mb-4">Construction Calculators</h1>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Professional tools for precise construction material calculations</p>
-            <div class="mt-6">
-                <a href="/" class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-                    <i class="fas fa-arrow-left mr-2"></i> Back to Home
-                </a>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-hard-hat" style="color: var(--primary-400);"></i>
+                Construction Tools
+            </a>
+            <div class="nav-links">
+                <a href="/calculators" class="nav-link">Calculators</a>
+                <a href="/aggregates" class="nav-link">Aggregates</a>
+                <a href="/employees" class="nav-link">Employees</a>
             </div>
+            <button class="mobile-nav-toggle" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-content container mx-auto px-4 py-4 max-w-4xl">
+        <div class="page-header text-center">
+            <h1 class="text-4xl main-title mb-4">Construction Calculators</h1>
+            <p class="subtitle mb-6">Professional tools for precise construction material calculations</p>
         </div>
         
-        <div class="grid md:grid-cols-2 gap-8">
-            <a href="/calculators/asphalt" 
-               class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                <div class="flex items-start">
-                    <div class="bg-blue-100 rounded-lg p-3 mr-4">
-                        <i class="fas fa-road text-blue-600 text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Asphalt Calculator</h2>
-                        <p class="text-gray-600">Calculate asphalt tonnage for your paving projects with precision</p>
-                    </div>
+        <div class="grid md:grid-cols-2 gap-6">
+            <a href="/calculators/asphalt" class="calculator-card">
+                <div class="icon-container" style="background-color: rgba(67, 97, 238, 0.15);">
+                    <i class="fas fa-road" style="color: var(--primary-400); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <h2 class="calculator-title">Asphalt Calculator</h2>
+                    <p class="calculator-description">Calculate asphalt tonnage for your paving projects with precision</p>
                 </div>
             </a>
-            <a href="/calculators/flatwork" 
-               class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                <div class="flex items-start">
-                    <div class="bg-green-100 rounded-lg p-3 mr-4">
-                        <i class="fas fa-square text-green-600 text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Concrete Flatwork</h2>
-                        <p class="text-gray-600">Determine concrete volume needed for slabs, sidewalks, and patios</p>
-                    </div>
+            
+            <a href="/calculators/flatwork" class="calculator-card">
+                <div class="icon-container" style="background-color: rgba(44, 182, 125, 0.15);">
+                    <i class="fas fa-square" style="color: var(--secondary-400); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <h2 class="calculator-title">Concrete Flatwork</h2>
+                    <p class="calculator-description">Determine concrete volume needed for slabs, sidewalks, and patios</p>
                 </div>
             </a>
 
-            <a href="/calculators/monocurb" 
-               class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                <div class="flex items-start">
-                    <div class="bg-yellow-100 rounded-lg p-3 mr-4">
-                        <i class="fas fa-border-all text-yellow-600 text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Monolithic Curb</h2>
-                        <p class="text-gray-600">Calculate concrete volume for integrated curb and gutter systems</p>
-                    </div>
+            <a href="/calculators/monocurb" class="calculator-card">
+                <div class="icon-container" style="background-color: rgba(245, 158, 11, 0.15);">
+                    <i class="fas fa-border-all" style="color: #f59e0b; font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <h2 class="calculator-title">Monolithic Curb</h2>
+                    <p class="calculator-description">Calculate concrete volume for integrated curb and gutter systems</p>
                 </div>
             </a>
 
-            <a href="/calculators/process" 
-               class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                <div class="flex items-start">
-                    <div class="bg-purple-100 rounded-lg p-3 mr-4">
-                        <i class="fas fa-layer-group text-purple-600 text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Aggregate Calculator</h2>
-                        <p class="text-gray-600">Estimate tonnage for various aggregate materials with accuracy</p>
-                    </div>
+            <a href="/calculators/process" class="calculator-card">
+                <div class="icon-container" style="background-color: rgba(139, 92, 246, 0.15);">
+                    <i class="fas fa-layer-group" style="color: var(--accent-400); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <h2 class="calculator-title">Aggregate Calculator</h2>
+                    <p class="calculator-description">Estimate tonnage for various aggregate materials with accuracy</p>
                 </div>
             </a>
 
-            <a href="/calculators/stonesys" 
-               class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                <div class="flex items-start">
-                    <div class="bg-red-100 rounded-lg p-3 mr-4">
-                        <i class="fas fa-cubes text-red-600 text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Stone System Calculator</h2>
-                        <p class="text-gray-600">Calculate dimensions and stone requirements for complex stone systems with comprehensive analysis</p>
-                    </div>
+            <a href="/calculators/stonesys" class="calculator-card">
+                <div class="icon-container" style="background-color: rgba(239, 68, 68, 0.15);">
+                    <i class="fas fa-cubes" style="color: #ef4444; font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <h2 class="calculator-title">Stone System Calculator</h2>
+                    <p class="calculator-description">Calculate dimensions and stone requirements for complex stone systems</p>
                 </div>
             </a>
         </div>
         
-        <footer class="mt-16 text-center text-gray-500 text-sm">
-            <p>&copy; 2025 Construction Tools. All rights reserved.</p>
+        <footer class="page-footer">
+            <p class="text-sm" style="color: var(--dark-400);">&copy; 2025 Construction Tools. All rights reserved.</p>
         </footer>
     </div>
 </body>

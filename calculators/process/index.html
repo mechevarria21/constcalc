@@ -5,69 +5,220 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aggregate Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-md">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Aggregate Calculator</h1>
+    <link rel="stylesheet" href="/styles/theme.css">
+    <link rel="stylesheet" href="/styles/navigation.css">
+    <script src="/styles/theme.js" defer></script>
+    <script src="/styles/navigation.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--dark-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
         
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="mb-4 flex justify-between items-center">
-                <p class="text-gray-600">Calculate aggregate tonnage</p>
-                <a href="/calculators" class="text-blue-600 hover:text-blue-800">Back to Calculators</a>
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .calculator-container {
+            background-color: var(--dark-800);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-700);
+            overflow: hidden;
+        }
+        
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-700);
+        }
+        
+        .calculator-title {
+            background: linear-gradient(to right, var(--accent-400), var(--accent-600));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-200);
+            font-size: 0.9rem;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            background-color: var(--dark-900);
+            border: 1px solid var(--dark-600);
+            border-radius: var(--radius-md);
+            color: var(--dark-100);
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent-500);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+        
+        .form-input::placeholder, .form-select::placeholder {
+            color: var(--dark-500);
+        }
+        
+        .status-message {
+            background-color: rgba(67, 97, 238, 0.1);
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            border-radius: var(--radius-md);
+            padding: 0.75rem;
+            margin-bottom: 1.25rem;
+            color: var(--primary-400);
+        }
+        
+        .status-message.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--error-500);
+        }
+        
+        .result-container {
+            background-color: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .result-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-200);
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-400);
+        }
+        
+        .info-text {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--dark-400);
+        }
+        
+        .info-text a {
+            color: var(--accent-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .info-text a:hover {
+            color: var(--accent-300);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-hard-hat" style="color: var(--primary-400);"></i>
+                Construction Tools
+            </a>
+            <div class="nav-links">
+                <a href="/calculators" class="nav-link">Calculators</a>
+                <a href="/aggregates" class="nav-link">Aggregates</a>
+                <a href="/employees" class="nav-link">Employees</a>
+            </div>
+            <button class="mobile-nav-toggle" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-content container mx-auto px-4 py-4 max-w-md">
+        <h1 class="text-3xl calculator-title mb-4 text-center">Aggregate Calculator</h1>
+        
+        <div class="calculator-container p-6">
+            <div class="calculator-header">
+                <p style="color: var(--dark-300);">Calculate aggregate tonnage</p>
+                <a href="/calculators" style="color: var(--accent-400);" class="hover:text-purple-400 transition-colors">
+                    <i class="fas fa-arrow-left mr-1"></i> Back
+                </a>
             </div>
             
-            <div id="statusMessage" class="mb-4 p-3 bg-blue-50 text-blue-700 rounded hidden">
+            <div id="statusMessage" class="status-message hidden">
                 Loading materials from database...
             </div>
             
-            <form id="calculatorForm" class="space-y-4">
-                <div>
-                    <label for="length" class="block text-sm font-medium text-gray-700">Length (feet)</label>
+            <form id="calculatorForm">
+                <div class="form-group">
+                    <label for="length" class="form-label">Length (feet)</label>
                     <input type="number" id="length" name="length" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                        class="form-input"
                         placeholder="Enter length">
                 </div>
 
-                <div>
-                    <label for="width" class="block text-sm font-medium text-gray-700">Width (feet)</label>
+                <div class="form-group">
+                    <label for="width" class="form-label">Width (feet)</label>
                     <input type="number" id="width" name="width" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                        class="form-input"
                         placeholder="Enter width">
                 </div>
 
-                <div>
-                    <label for="depth" class="block text-sm font-medium text-gray-700">Depth (inches)</label>
+                <div class="form-group">
+                    <label for="depth" class="form-label">Depth (inches)</label>
                     <input type="number" id="depth" name="depth" step="any" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                        class="form-input"
                         placeholder="Enter depth">
                 </div>
 
-                <div>
-                    <label for="material" class="block text-sm font-medium text-gray-700">Material Type</label>
+                <div class="form-group">
+                    <label for="material" class="form-label">Material Type</label>
                     <select id="material" name="material" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                        class="form-select">
                         <option value="">Select material...</option>
                         <!-- Material options will be populated from API -->
                     </select>
                 </div>
 
-                <div>
-                    <label for="compaction" class="block text-sm font-medium text-gray-700">Compaction State</label>
+                <div class="form-group">
+                    <label for="compaction" class="form-label">Compaction State</label>
                     <select id="compaction" name="compaction" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                        class="form-select">
                         <option value="">Select compaction state...</option>
                         <option value="loose">Loose</option>
                         <option value="compacted">Compacted (95%)</option>
                     </select>
                 </div>
 
-                <div class="mt-6 p-4 bg-gray-50 rounded-md">
-                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Result:</h2>
-                    <p id="result" class="text-2xl font-bold text-blue-600">0.00 tons</p>
+                <div class="result-container">
+                    <h2 class="result-title">Result:</h2>
+                    <p id="result" class="result-value">0.00 tons</p>
                 </div>
                 
-                <div class="mt-4 text-sm text-gray-500">
-                    <p>Material data is sourced from the <a href="/aggregates" class="text-blue-600 hover:underline">Aggregate Materials Database</a>.</p>
+                <div class="info-text">
+                    <p>Material data is sourced from the <a href="/aggregates">Aggregate Materials Database</a>.</p>
                 </div>
             </form>
         </div>
@@ -148,69 +299,13 @@
         function updateStatus(message, isError = false) {
             const statusMessage = document.getElementById('statusMessage');
             statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden');
             
             if (isError) {
-                statusMessage.classList.remove('bg-blue-50', 'text-blue-700');
-                statusMessage.classList.add('bg-red-50', 'text-red-700');
+                statusMessage.classList.add('error');
             } else {
-                statusMessage.classList.remove('bg-red-50', 'text-red-700');
-                statusMessage.classList.add('bg-blue-50', 'text-blue-700');
+                statusMessage.classList.remove('error');
             }
-            
-            // Update the data source indicator
-            updateDataSourceIndicator();
-        }
-        
-        // Update data source indicator
-        function updateDataSourceIndicator() {
-            // Early return to hide the indicator
-            return;
-            
-            // Remove existing indicator if any
-            const existingIndicator = document.getElementById('dataSourceIndicator');
-            if (existingIndicator) {
-                existingIndicator.remove();
-            }
-            
-            // Create new indicator
-            const indicator = document.createElement('div');
-            indicator.id = 'dataSourceIndicator';
-            indicator.className = 'mt-4 p-3 rounded text-sm';
-            
-            // Determine data source
-            let source, bgColor, textColor;
-            if (materials.length === 0) {
-                source = 'No data loaded';
-                bgColor = 'bg-gray-50';
-                textColor = 'text-gray-700';
-            } else if (materials === localApiData) {
-                source = 'Using local database (API unavailable)';
-                bgColor = 'bg-yellow-50';
-                textColor = 'text-yellow-700';
-            } else if (Object.keys(materials[0]).includes('category')) {
-                source = 'Connected to remote database';
-                bgColor = 'bg-green-50';
-                textColor = 'text-green-700';
-            } else {
-                source = 'Using fallback data (database unavailable)';
-                bgColor = 'bg-red-50';
-                textColor = 'text-red-700';
-            }
-            
-            indicator.className += ` ${bgColor} ${textColor}`;
-            indicator.innerHTML = `
-                <div class="flex items-center">
-                    <div class="w-3 h-3 rounded-full ${bgColor === 'bg-green-50' ? 'bg-green-500' : bgColor === 'bg-yellow-50' ? 'bg-yellow-500' : 'bg-red-500'} mr-2"></div>
-                    <span><strong>Data Source:</strong> ${source}</span>
-                </div>
-                <div class="mt-1">
-                    <span><strong>Materials:</strong> ${materials.length} items loaded</span>
-                </div>
-            `;
-            
-            // Add to page
-            const form = document.getElementById('calculatorForm');
-            form.appendChild(indicator);
         }
         
         // Fetch materials from API
@@ -234,224 +329,121 @@
                     }
                     
                     const responseText = await response.text();
-                    console.log('API Response:', responseText); // Debug log
                     
                     let data;
                     try {
                         data = JSON.parse(responseText);
-                        console.log('Parsed data:', data); // Debug log
                     } catch (parseError) {
                         throw new Error('Failed to parse JSON: ' + parseError.message);
                     }
                     
                     // Check if data is an array (direct response) or has a value property
                     materials = Array.isArray(data) ? data : (data.value || []);
-                    console.log('Materials array:', materials); // Debug log
-                    
-                    // Ensure each material has the required properties
-                    materials = materials.map(material => {
-                        // Make sure we have a valid name
-                        if (!material.name && material.id) {
-                            material.name = String(material.id).split('_')
-                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                .join(' ');
-                        }
-                        
-                        // Ensure ID is a string
-                        if (material.id !== undefined) {
-                            material.id = String(material.id);
-                        }
-                        
-                        return material;
-                    });
                     
                     if (materials.length === 0) {
-                        throw new Error('No materials found in database');
+                        throw new Error('No materials found in API response');
                     }
                     
-                    // Hide status message instead of updating it
-                    document.getElementById('statusMessage').classList.add('hidden');
-                    populateMaterialDropdown();
-                    return; // Exit the function if API call was successful
-                } catch (apiError) {
-                    console.error('Remote API Error:', apiError);
-                    console.log('Trying local API data...');
+                    updateStatus('Materials loaded successfully');
+                    setTimeout(() => {
+                        document.getElementById('statusMessage').classList.add('hidden');
+                    }, 2000);
                     
-                    // Try local API data
+                } catch (apiError) {
+                    console.warn('API fetch failed, using local data:', apiError);
                     materials = localApiData;
-                    console.log('Using local API data:', materials);
-                    // Hide status message instead of updating it
-                    document.getElementById('statusMessage').classList.add('hidden');
-                    populateMaterialDropdown();
-                    return;
+                    updateStatus('Using local material database', true);
+                    setTimeout(() => {
+                        document.getElementById('statusMessage').classList.add('hidden');
+                    }, 3000);
                 }
+                
+                // Populate material dropdown
+                populateMaterialDropdown();
+                
             } catch (error) {
                 console.error('Error fetching materials:', error);
-                // Only show status message for errors
-                updateStatus(`Error loading materials: ${error.message}. Using fallback data.`, true);
-                document.getElementById('statusMessage').classList.remove('hidden');
-                
-                // Use fallback data as last resort
-                materials = Object.entries(fallbackMaterialDensities).map(([id, densities]) => ({
-                    id: String(id),
-                    name: id.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-                    looseDensity: densities.loose,
-                    compactedDensity: densities.compacted
-                }));
-                
-                console.log('Using fallback materials:', materials); // Debug log
-                populateMaterialDropdown();
+                updateStatus('Error loading materials: ' + error.message, true);
             }
         }
         
-        // Populate material dropdown with options from API
+        // Populate material dropdown
         function populateMaterialDropdown() {
             const materialSelect = document.getElementById('material');
-            console.log('Populating dropdown with materials:', materials); // Debug log
             
             // Clear existing options except the first one
             while (materialSelect.options.length > 1) {
                 materialSelect.remove(1);
             }
             
-            // Add materials from API as options
+            // Add materials to dropdown
             materials.forEach(material => {
-                console.log('Adding material to dropdown:', material); // Debug individual material
-                
                 const option = document.createElement('option');
-                // Ensure ID is a string
-                option.value = String(material.id);
-                
-                // Make sure we have a valid name, or create one from the ID
-                const displayName = material.name || 
-                    (material.id ? String(material.id).split('_').map(word => 
-                        word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Unknown Material');
-                
-                option.textContent = displayName;
+                option.value = material.id;
+                option.textContent = material.name;
                 materialSelect.appendChild(option);
-                
-                console.log(`Added option: value=${option.value}, text=${option.textContent}`); // Debug option
-            });
-            
-            // Log the final state of the dropdown
-            console.log('Dropdown populated. Options:', Array.from(materialSelect.options).map(opt => ({
-                value: opt.value,
-                text: opt.textContent
-            })));
-            
-            // Enable the form
-            document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
-                input.disabled = false;
             });
         }
         
-        // Calculate tonnage based on dimensions and material properties
-        function calculateTons(length, width, depth, materialId, compactionState) {
-            // Convert cubic feet to cubic yards (1 cubic yard = 27 cubic feet)
-            const volumeCubicYards = (length * width * (depth / 12)) / 27;
+        // Calculate aggregate tonnage
+        function calculateTonnage() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const depth = parseFloat(document.getElementById('depth').value) || 0;
+            const materialId = document.getElementById('material').value;
+            const compactionState = document.getElementById('compaction').value;
             
-            console.log('Looking for material with ID:', materialId); // Debug log
-            console.log('Available materials:', materials.map(m => ({ id: m.id, name: m.name }))); // Debug log
-            
-            // Find the selected material - handle both string and numeric IDs
-            const material = materials.find(m => 
-                m.id === materialId || // Exact match
-                m.id === String(materialId) || // String conversion
-                String(m.id) === materialId // String conversion
-            );
-            
-            if (!material) {
-                throw new Error(`Material with ID ${materialId} not found. Please select a valid material.`);
+            if (!length || !width || !depth || !materialId || !compactionState) {
+                document.getElementById('result').textContent = '0.00 tons';
+                return;
             }
             
-            console.log('Selected material:', material); // Debug log
+            // Find selected material
+            const material = materials.find(m => m.id === materialId);
+            
+            if (!material) {
+                updateStatus('Material not found', true);
+                return;
+            }
             
             // Get density based on compaction state
             let density;
             if (compactionState === 'loose') {
                 density = material.looseDensity;
-            } else if (compactionState === 'compacted') {
+            } else {
                 density = material.compactedDensity;
-            }
-            
-            console.log(`Using ${compactionState} density:`, density); // Debug log
-            
-            if (density === undefined || density === null) {
-                throw new Error(`Compaction state '${compactionState}' is not available for ${material.name}`);
-            }
-            
-            // Convert volume to tons
-            const result = volumeCubicYards * density;
-            console.log(`Calculation: ${volumeCubicYards} cubic yards × ${density} tons/cy = ${result} tons`); // Debug log
-            return result;
-        }
-        
-        // Update result based on form inputs
-        function updateResult() {
-            const length = parseFloat(document.getElementById('length').value) || 0;
-            const width = parseFloat(document.getElementById('width').value) || 0;
-            const depth = parseFloat(document.getElementById('depth').value) || 0;
-            const material = document.getElementById('material').value;
-            const compaction = document.getElementById('compaction').value;
-            
-            console.log('Form values:', { length, width, depth, material, compaction }); // Debug form values
-            
-            try {
-                if (length && width && depth && material && compaction) {
-                    const tons = calculateTons(length, width, depth, material, compaction);
-                    document.getElementById('result').textContent = `${tons.toFixed(2)} tons`;
-                    document.getElementById('result').classList.remove('text-red-600');
-                    document.getElementById('result').classList.add('text-blue-600');
-                } else {
-                    // Show which values are missing
-                    const missing = [];
-                    if (!length) missing.push('Length');
-                    if (!width) missing.push('Width');
-                    if (!depth) missing.push('Depth');
-                    if (!material) missing.push('Material');
-                    if (!compaction) missing.push('Compaction State');
-                    
-                    if (missing.length > 0) {
-                        document.getElementById('result').textContent = `Please enter: ${missing.join(', ')}`;
-                    } else {
-                        document.getElementById('result').textContent = '0.00 tons';
-                    }
+                
+                // If compacted density is not available, use loose density with a factor
+                if (!density && material.looseDensity) {
+                    density = material.looseDensity * 1.3; // Approximate compaction factor
                 }
-            } catch (error) {
-                document.getElementById('result').textContent = error.message;
-                document.getElementById('result').classList.remove('text-blue-600');
-                document.getElementById('result').classList.add('text-red-600');
             }
+            
+            if (!density) {
+                updateStatus(`Density data not available for ${material.name} in ${compactionState} state`, true);
+                return;
+            }
+            
+            // Calculate volume in cubic yards
+            const volumeCubicFeet = (length * width * (depth / 12));
+            const volumeCubicYards = volumeCubicFeet / 27;
+            
+            // Calculate tonnage
+            const tonnage = volumeCubicYards * density;
+            
+            // Update result
+            document.getElementById('result').textContent = `${tonnage.toFixed(2)} tons`;
         }
         
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page initialized'); // Debug log
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fetch materials
+            fetchMaterials();
             
-            // Disable form inputs until materials are loaded
-            document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
-                input.disabled = true;
+            // Add event listeners to inputs
+            document.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('input', calculateTonnage);
             });
-            
-            // Initially hide the status message
-            document.getElementById('statusMessage').classList.add('hidden');
-            
-            // Add event listeners to form inputs
-            document.querySelectorAll('#calculatorForm input, #calculatorForm select').forEach(input => {
-                input.addEventListener('input', updateResult);
-                input.addEventListener('change', updateResult);
-            });
-            
-            // Fetch materials from API
-            fetchMaterials()
-                .then(() => {
-                    console.log('Materials loaded successfully');
-                    // Force an update of the result to show any validation messages
-                    updateResult();
-                })
-                .catch(error => {
-                    console.error('Failed to load materials:', error);
-                });
         });
     </script>
 </body>
